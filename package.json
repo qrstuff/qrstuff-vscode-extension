@@ -13,6 +13,7 @@
     "url": "https://github.com/qrstuff/qrstuff-vscode-extension/issues"
   },
   "homepage": "https://github.com/qrstuff/qrstuff-vscode-extension#readme",
+  "icon": "media/logo.png",
   "engines": {
     "vscode": "^1.80.0"
   },
