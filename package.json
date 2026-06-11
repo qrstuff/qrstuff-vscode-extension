@@ -1,0 +1,55 @@
+{
+  "name": "qrstuff-vscode-extension",
+  "displayName": "QRStuff MCP Connection Helper",
+  "description": "Automatically configures the QRStuff MCP server in Cursor, VS Code, and Antigravity, and provides a sidebar authentication webview.",
+  "version": "0.1.0",
+  "publisher": "qrstuff",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "AI",
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "qrstuff-sidebar-container",
+          "title": "QRStuff",
+          "icon": "media/logo.png"
+        }
+      ]
+    },
+    "views": {
+      "qrstuff-sidebar-container": [
+        {
+          "type": "webview",
+          "id": "qrstuff.webview",
+          "name": "QRStuff Connection Manager",
+          "visibility": "visible"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "qrstuff.configureMCP",
+        "title": "QRStuff: Configure MCP Server Settings"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.11",
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.0.4"
+  }
+}

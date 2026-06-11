@@ -1,0 +1,15 @@
+.vscode/**
+.git/**
+.gitignore
+.vscodeignore
+src/**
+tsconfig.json
+README.md
+AGENTS.md
+vsc-extension-quickstart.md
+webpack.config.js
+esbuild.js
+node_modules/**
+**/tsconfig.json
+**/*.map
+**/*.ts
