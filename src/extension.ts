@@ -49,7 +49,7 @@ function configureMCPServers(manual: boolean) {
     let configuredCount = 0;
     let messages: string[] = [];
 
-    // Configuration targets
+    // 1. JSON-based configurations (Cursor, Antigravity, Gemini CLI)
     const targets = [
         {
             name: 'Cursor',
@@ -72,7 +72,6 @@ function configureMCPServers(manual: boolean) {
     ];
 
     for (const target of targets) {
-        // Only write to target if its parent directory exists (indicating the tool is installed/used)
         if (fs.existsSync(target.dirPath)) {
             try {
                 let config: any = {};
@@ -88,19 +87,63 @@ function configureMCPServers(manual: boolean) {
                     }
                 }
 
-                // Ensure the mcpServers parent key exists
                 if (!config[target.key] || typeof config[target.key] !== 'object') {
                     config[target.key] = {};
                 }
 
-                // Inject or update QRStuff server configuration
                 config[target.key]['qrstuff'] = serverConfig;
 
-                // Write back formatted JSON
                 fs.writeFileSync(target.filePath, JSON.stringify(config, null, 2), 'utf-8');
                 configuredCount++;
-                messages.push(`${target.name} config file`);
+                messages.push(target.name);
                 console.log(`Successfully registered QRStuff MCP server in ${target.name} configuration.`);
+            } catch (err: any) {
+                console.error(`Error configuring ${target.name} MCP server:`, err);
+                if (manual) {
+                    throw new Error(`Error writing ${target.name} configuration: ${err.message}`);
+                }
+            }
+        }
+    }
+
+    // 2. TOML-based configurations (OpenAI Codex)
+    const codexTargets: { name: string; dirPath: string; filePath: string }[] = [
+        {
+            name: 'Global Codex',
+            dirPath: path.join(homedir, '.codex'),
+            filePath: path.join(homedir, '.codex', 'config.toml')
+        }
+    ];
+
+    // Add workspace-local Codex targets if workspaces are open
+    if (vscode.workspace.workspaceFolders) {
+        for (const folder of vscode.workspace.workspaceFolders) {
+            const localCodexDir = path.join(folder.uri.fsPath, '.codex');
+            codexTargets.push({
+                name: `Workspace Codex (${folder.name})`,
+                dirPath: localCodexDir,
+                filePath: path.join(localCodexDir, 'config.toml')
+            });
+        }
+    }
+
+    for (const target of codexTargets) {
+        if (fs.existsSync(target.dirPath)) {
+            try {
+                let fileContent = "";
+                if (fs.existsSync(target.filePath)) {
+                    fileContent = fs.readFileSync(target.filePath, 'utf8');
+                }
+
+                const tomlEntry = `[mcp_servers.qrstuff]\nurl = "https://mcp.qrstuff.ai/mcp"`;
+
+                if (!fileContent.includes('[mcp_servers.qrstuff]')) {
+                    const newline = fileContent.endsWith('\n') ? '' : '\n';
+                    fs.appendFileSync(target.filePath, `${newline}\n${tomlEntry}\n`, 'utf8');
+                    configuredCount++;
+                    messages.push(target.name);
+                    console.log(`Successfully registered QRStuff MCP server in ${target.name} configuration.`);
+                }
             } catch (err: any) {
                 console.error(`Error configuring ${target.name} MCP server:`, err);
                 if (manual) {
@@ -117,7 +160,7 @@ function configureMCPServers(manual: boolean) {
             );
         } else {
             vscode.window.showWarningMessage(
-                "No target IDE configuration directories were found. Please make sure Cursor or Gemini CLI is installed."
+                "No target IDE configuration directories were found. Please make sure Cursor, Codex, or Gemini CLI is installed."
             );
         }
     }
