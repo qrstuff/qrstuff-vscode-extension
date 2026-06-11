@@ -4,6 +4,15 @@
   "description": "Automatically configures the QRStuff MCP server in Cursor, VS Code, and Antigravity, and provides a sidebar authentication webview.",
   "version": "0.1.0",
   "publisher": "qrstuff",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qrstuff/qrstuff-vscode-extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/qrstuff/qrstuff-vscode-extension/issues"
+  },
+  "homepage": "https://github.com/qrstuff/qrstuff-vscode-extension#readme",
   "engines": {
     "vscode": "^1.80.0"
   },
