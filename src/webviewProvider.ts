@@ -32,7 +32,7 @@ export class QRStuffWebviewProvider implements vscode.WebviewViewProvider {
         });
     }
 
-    private _getHtmlForWebview(webview: vscode.Webview: any): string {
+    private _getHtmlForWebview(webview: vscode.Webview): string {
         return `<!DOCTYPE html>
 <html lang="en">
 <head>
